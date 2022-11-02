@@ -28,8 +28,8 @@ let admquiz;
 let anontrueid;
 bot.on("message", async ctx => {
     try {
-        if(ctx.chat.id == '5103314362') {
-            /* '933981477' */
+        if(ctx.chat.id == '933981477') {
+            /* '5103314362' */
             let anonid = await collection.findOne({anonId: ctx.message.text});
             if(anonid == null) {
                 await ctx.reply(`Я не нашел в базе данное ID: ${ctx.message.text}`)
@@ -114,7 +114,7 @@ bot.action('unacc', async ctx => {
 bot.action('yes', async ctx => {
     try {
         let anonserch = await collection.findOne({user_id: ctx.callbackQuery.from.id});
-        await ctx.tg.sendMessage(5103314362, `Новое анонимное сообщение ${anonserch.anonId}\n\nДля проверки анонимного сообщения напишите ID сообщения(#00000)`);
+        await ctx.tg.sendMessage(933981477, `Новое анонимное сообщение ${anonserch.anonId}\n\nДля проверки анонимного сообщения напишите ID сообщения(#00000)`);
         await ctx.tg.deleteMessage(ctx.chat.id, anonserch.quiz_markup);
         await ctx.answerCbQuery('Ваше сообщение отправлено на проверку, ожидайте...')
     }catch(e){
