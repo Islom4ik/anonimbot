@@ -86,8 +86,9 @@ bot.action("watch", async ctx => {
 bot.action('acc', async ctx => {
     try {
         await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);  
-        let anoncouna = await collection.findOne({_id: ObjectId('63612b27b24e538f644ad357')})
-        await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${anoncouna.anonim_message_count}:\n\n${anontrueid.user_anonmsg}`)
+        let anoncouna = await collection.findOne({_id: ObjectId('6363c74b38cbdb91eef0e1d4')})
+        let restot = await anoncouna.anonim_message_countres + 1;
+        await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`)
         await collection.findOneAndDelete({user_id: anontrueid.user_id})
         await ctx.answerCbQuery('Отправлено');
     }catch(e){
