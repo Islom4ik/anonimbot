@@ -88,6 +88,7 @@ bot.action('acc', async ctx => {
         await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);  
         let anoncouna = await collection.findOne({_id: ObjectId('6363c74b38cbdb91eef0e1d4')})
         let restot = await anoncouna.anonim_message_countres + 1;
+        await collection.findOneAndUpdate({_id: ObjectId('6363c74b38cbdb91eef0e1d4')}, {$set: {anonim_message_countres: restot}})
         await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`)
         await collection.findOneAndDelete({user_id: anontrueid.user_id})
         await ctx.answerCbQuery('Отправлено');
