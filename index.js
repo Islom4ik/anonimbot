@@ -59,7 +59,8 @@ bot.on("message", async ctx => {
                         user_firstname: ctx.message.from.first_name,
                         user_anonmsg: ctx.message.text,
                         quiz_markup: `${quat.message_id}`,
-                        anonId: `#${result}`
+                        anonId: `#${result}`,
+                        anonchat: ctx.chat.id
                     }
                 )   
                 await collection.findOneAndUpdate({_id: ObjectId('63612b27b24e538f644ad357')}, {$set: {anonim_message_count: result}});
@@ -89,7 +90,8 @@ bot.action('acc', async ctx => {
         let anoncouna = await collection.findOne({_id: ObjectId('6363c74b38cbdb91eef0e1d4')})
         let restot = await anoncouna.anonim_message_countres + 1;
         await collection.findOneAndUpdate({_id: ObjectId('6363c74b38cbdb91eef0e1d4')}, {$set: {anonim_message_countres: restot}})
-        await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`)
+        await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`);
+        await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение успешно прошло проверку!');
         await collection.findOneAndDelete({user_id: anontrueid.user_id})
         await ctx.answerCbQuery('Отправлено');
     }catch(e){
@@ -101,6 +103,7 @@ bot.action('acc', async ctx => {
 bot.action('unacc', async ctx => {
     try {
         await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);
+        await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение не прошло проверку...\n');
         let anoncounun = await collection.findOne({_id: ObjectId('63612b27b24e538f644ad357')});
         let rs = await anoncounun.anonim_message_count - 1;
         await collection.findOneAndUpdate({_id: ObjectId('63612b27b24e538f644ad357')}, {$set: {anonim_message_count: rs}});
