@@ -26,7 +26,7 @@ bot.launch({dropPendingUpdates: true});
 
 let admquiz;
 let anontrueid;
-bot.on("message", async ctx => {
+bot.on("text", async ctx => {
     try {
         if(ctx.chat.id == '933981477') {
             /* '5103314362' */
@@ -121,7 +121,7 @@ bot.action('yes', async ctx => {
         let anonserch = await collection.findOne({user_id: ctx.callbackQuery.from.id});
         await ctx.tg.sendMessage(933981477, `Новое анонимное сообщение ${anonserch.anonId}\n\nДля проверки анонимного сообщения напишите ID сообщения(#00000)`);
         await ctx.tg.deleteMessage(ctx.chat.id, anonserch.quiz_markup);
-        await ctx.answerCbQuery('Ваше сообщение отправлено на проверку, ожидайте...')
+        await ctx.answerCbQuery('Ваше сообщение отправлено', {show_alert: false})
     }catch(e){
         console.error(e);
     }
