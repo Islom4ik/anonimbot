@@ -102,12 +102,13 @@ bot.action('acc', async ctx => {
 
 bot.action('unacc', async ctx => {
     try {
-        await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);
-        await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение не прошло проверку...\n');
         let anoncounun = await collection.findOne({_id: ObjectId('63612b27b24e538f644ad357')});
         let rs = await anoncounun.anonim_message_count - 1;
         await collection.findOneAndUpdate({_id: ObjectId('63612b27b24e538f644ad357')}, {$set: {anonim_message_count: rs}});
         await collection.deleteOne({anonId: anontrueid.anonId})
+        await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);
+        await ctx.answerCbQuery('Выполнено', {show_alert: false})
+        await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение не прошло проверку...\n');
     }catch(e){
         console.error(e);
     }
