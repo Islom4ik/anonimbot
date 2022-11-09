@@ -1,5 +1,70 @@
-const { Telegraf, session, Markup } = require('telegraf');
+const { Scenes, Telegraf, session, Markup } = require('telegraf');
 require('dotenv').config()
+const { enter, leave } = Scenes.Stage;
+// SCENES
+
+const admunacc = new Scenes.BaseScene("admunacc");
+
+admunacc.enter(async ctx => {
+    try {
+        await ctx.replyWithHTML('Введите причину отказа:')
+    }catch(e) { 
+        console.error(e);
+    }
+})
+
+let admunaccmsg;
+let admmsg;
+admunacc.on('message', async ctx => {
+    try {
+        admmsg = ctx.message.text
+        admunaccmsg = await ctx.replyWithHTML(`Вы уверены что хотите отправить следующую причину?:\n<i>${ctx.message.text}</i>`, Markup.inlineKeyboard([
+            [Markup.button.callback('Изменить текст причины', 'rewrite'), Markup.button.callback('Отмена', 'cancel')],
+            [Markup.button.callback('Отправить', 'send')]
+        ]))
+        // await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение не прошло проверку по причине:\n');
+    }catch(e) {
+        console.error(e);
+    }
+}) 
+
+admunacc.action('cancel', async ctx => {
+    try {
+        await ctx.tg.deleteMessage(ctx.chat.id, admunaccmsg.message_id)
+        await ctx.answerCbQuery('Окей...')
+        await ctx.scene.leave('admunacc')
+    }catch(e) {
+        console.error(e);
+    }
+})
+admunacc.action('send', async ctx => {
+    try {
+        await ctx.tg.deleteMessage(ctx.chat.id, admunaccmsg.message_id);
+        let anoncounun = await collection.findOne({_id: ObjectId('63612b27b24e538f644ad357')});
+        let rs = await anoncounun.anonim_message_count - 1;
+        await collection.findOneAndUpdate({_id: ObjectId('63612b27b24e538f644ad357')}, {$set: {anonim_message_count: rs}});
+        await collection.deleteOne({anonId: anontrueid.anonId});
+        await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);
+        await ctx.answerCbQuery('Отправляю...');
+        await ctx.tg.sendMessage(anontrueid.anonchat, `Ваше сообщение не прошло проверку по причине:\n<b>${admmsg}</b>`, {parse_mode: "HTML"});
+        await ctx.scene.leave("admunacc")
+    }catch(e) {
+        console.error(e);
+    }
+})
+admunacc.action('rewrite', async ctx => {
+    try {
+        await ctx.tg.deleteMessage(ctx.chat.id, admunaccmsg.message_id)
+        await ctx.answerCbQuery('Окей...')
+        ctx.scene.enter('admunacc')
+    }catch(e) {
+        console.error(e);
+    }
+})
+    
+
+// SCENES
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const { MongoClient, ObjectId } = require('mongodb');
 const url = process.env.DB;
@@ -7,16 +72,9 @@ const client = new MongoClient(url);
 client.connect();
 const db = client.db('bot');
 const collection = db.collection('anonim_messages');
-
+const stage = new Scenes.Stage([admunacc]);  
 bot.use(session()); 
-
-bot.use((ctx,next)=>{
-    if (typeof ctx.session === 'undefined'){
-        ctx.session = {}
-        
-    }
-    next()
-})
+bot.use(stage.middleware()); 
 
 bot.start((ctx) => ctx.replyWithHTML('Здравствуй Аноним!\nВ данном боте ты можешь отправить в <a href="https://t.me/cicanonymous">канал</a> свое анонимное сообщения признания или послания и никто об этом не узнает 🥴\nПросто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
 bot.help((ctx) => ctx.replyWithHTML('Просто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
@@ -84,7 +142,7 @@ bot.action("watch", async ctx => {
     }  
 })
 
-bot.action('acc', async ctx => {
+bot.action('acc', async ctx => {  
     try {
         await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);  
         let anoncouna = await collection.findOne({_id: ObjectId('6363c74b38cbdb91eef0e1d4')})
@@ -102,13 +160,8 @@ bot.action('acc', async ctx => {
 
 bot.action('unacc', async ctx => {
     try {
-        let anoncounun = await collection.findOne({_id: ObjectId('63612b27b24e538f644ad357')});
-        let rs = await anoncounun.anonim_message_count - 1;
-        await collection.findOneAndUpdate({_id: ObjectId('63612b27b24e538f644ad357')}, {$set: {anonim_message_count: rs}});
-        await collection.deleteOne({anonId: anontrueid.anonId})
-        await ctx.tg.deleteMessage(ctx.chat.id, admquiz.message_id);
         await ctx.answerCbQuery('Выполнено', {show_alert: false})
-        await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение не прошло проверку...\n');
+        await ctx.scene.enter('admunacc')
     }catch(e){
         console.error(e);
     }
