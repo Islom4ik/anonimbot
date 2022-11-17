@@ -92,6 +92,7 @@ bot.command('delete', async ctx => {
             let isnum = await !hasOnlyDigits(text[1]);
             if (isnum == false) {
                 await ctx.tg.sendMessage(933981477, `📤 Новый запрос на удаление сообщения.\nНомер сообщения: <b>#${text[1]}</b>\n\nДанные пользователя:\nFirst Name: ${ctx.message.from.first_name}\nLast Name: ${ctx.message.from.last_name || 'None'}\nUser Name: @${ctx.message.from.username}\nUser Id: ${ctx.message.from.id}\nIs Bot?: ${ctx.message.from.is_bot}\nIs Premium?: ${ctx.message.from.is_premium}`, {parse_mode: 'HTML'})
+                await ctx.reply('🟢 Запрос на удаление успешно отправлено.')
             }else {
                 await ctx.reply('🔴 Введите номер сообщения(без #). Я не принимаю буквы или символы...')
             }
