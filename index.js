@@ -80,6 +80,27 @@ bot.start((ctx) => ctx.replyWithHTML('Здравствуй Аноним!\nВ д�
 bot.help((ctx) => ctx.replyWithHTML('Просто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
 bot.launch({dropPendingUpdates: true});
 
+bot.command('delete', async ctx => {
+    try {
+        let text = await ctx.message.text.split(' ')
+        const hasOnlyDigits = (v) => /^\d+$/.test(v);
+        if(text.length > 2) {
+            await ctx.reply('🔴 Извините, я принимаю только 1 аргумент к данной команде. Введите команду по следующему примеру:\n➖➖➖➖➖➖➖\n/delete <number>')
+        }else if(text.length == 1){
+            await ctx.reply('🔴 Вы не ввели номер сообщения. Введите команду по следующему примеру:\n➖➖➖➖➖➖➖\n/delete <number>')
+        }else {
+            let isnum = await !hasOnlyDigits(text[1]);
+            if (isnum == false) {
+                await ctx.tg.sendMessage(933981477, `📤 Новый запрос на удаление сообщения.\nНомер сообщения: <b>#${text[1]}</b>\n\nДанные пользователя:\nFirst Name: ${ctx.message.from.first_name}\nLast Name: ${ctx.message.from.last_name || 'None'}\nUser Name: @${ctx.message.from.username}\nUser Id: ${ctx.message.from.id}\nIs Bot?: ${ctx.message.from.is_bot}\nIs Premium?: ${ctx.message.from.is_premium}`, {parse_mode: 'HTML'})
+            }else {
+                await ctx.reply('🔴 Введите номер сообщения(без #). Я не принимаю буквы или символы...')
+            }
+        }
+    }catch(e) {
+        console.error(e);
+    }
+})
+
 // 933981477
 
 let admquiz;
