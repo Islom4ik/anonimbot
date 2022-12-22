@@ -1,3 +1,5 @@
+const { registerFont ,createCanvas, loadImage, Image } = require('canvas')
+registerFont('Broadway-Neon.ttf', { family: 'Broadway-Neon' })
 const { Scenes, Telegraf, session, Markup } = require('telegraf');
 require('dotenv').config()
 const { enter, leave } = Scenes.Stage;
@@ -61,8 +63,6 @@ admunacc.action('rewrite', async ctx => {
         console.error(e);
     }
 })
-    
-
 // SCENES
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -76,7 +76,7 @@ const stage = new Scenes.Stage([admunacc]);
 bot.use(session()); 
 bot.use(stage.middleware()); 
 
-bot.start((ctx) => ctx.replyWithHTML('Здравствуй Аноним!\nВ данном боте ты можешь отправить в <a href="https://t.me/cicanonymous">канал</a> свое анонимное сообщения признания или послания и никто об этом не узнает 🥴\nПросто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
+bot.start((ctx) => ctx.replyWithHTML('💘 Здравствуй Аноним!\nВ данном боте ты можешь отправить в <a href="https://t.me/cicanonymous">канал</a> свое анонимное сообщения признания или послания и никто об этом не узнает 🤫\n\nПросто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
 bot.help((ctx) => ctx.replyWithHTML('Просто отправь свое желаемое сообщение и я отправлю твое сообщение в <a href="https://t.me/cicanonymous">канал</a> <b>анонимно</b>!', {disable_web_page_preview: true}));
 bot.launch({dropPendingUpdates: true});
 
@@ -170,7 +170,17 @@ bot.action('acc', async ctx => {
         let anoncouna = await collection.findOne({_id: ObjectId('6363c74b38cbdb91eef0e1d4')})
         let restot = await anoncouna.anonim_message_countres + 1;
         await collection.findOneAndUpdate({_id: ObjectId('6363c74b38cbdb91eef0e1d4')}, {$set: {anonim_message_countres: restot}})
-        await ctx.tg.sendMessage(-1001514376747, `👤 Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`);
+        const canvas = await createCanvas(600, 200)
+        let ctxx = await canvas.getContext('2d');
+        ctxx.font = await "60px Broadway-Neon";
+        await ctxx.rect(0, 0, 600, 200);
+        ctxx.fillStyle = await 'rgb(11, 11, 11)';
+        await ctxx.fill();
+        ctxx.fillStyle = await 'White';
+        ctxx.textAlign = await "center";
+        ctxx.textBaseline = await "middle";
+        await ctxx.fillText(`${restot}`, 300, 100)
+        await ctx.tg.sendPhoto(-1001514376747, {source: canvas.toBuffer()}, {parse_mode: "HTML", caption: `❄️ Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`})
         await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение успешно прошло проверку!');
         await collection.findOneAndDelete({user_id: anontrueid.user_id})
         await ctx.answerCbQuery('Отправлено');
