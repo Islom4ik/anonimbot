@@ -179,7 +179,15 @@ bot.action('acc', async ctx => {
         ctxx.fillStyle = await 'White';
         ctxx.textAlign = await "center";
         ctxx.textBaseline = await "middle";
+        await loadImage('./sneg.png').then(async (image) => {
+            await ctxx.drawImage(image, 0, 0)
+        })
         await ctxx.fillText(`${restot}`, 300, 100)
+        ctxx.fillStyle = await 'White';
+        ctxx.textAlign = await "center";
+        ctxx.textBaseline = await "middle";
+        ctxx.font = '10px Impact'
+        await ctxx.fillText('CIC ANONYMOUS', 300, 15)
         await ctx.tg.sendPhoto(-1001514376747, {source: canvas.toBuffer()}, {parse_mode: "HTML", caption: `❄️ Новое анонимное сообщение #${restot}:\n\n${anontrueid.user_anonmsg}`})
         await ctx.tg.sendMessage(anontrueid.anonchat, 'Ваше сообщение успешно прошло проверку!');
         await collection.findOneAndDelete({user_id: anontrueid.user_id})
