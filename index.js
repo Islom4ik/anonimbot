@@ -102,6 +102,14 @@ bot.command('delete', async ctx => {
     }
 })
 
+bot.command('up', async ctx => {
+    try {
+        await ctx.tg.sendMessage(-1001514376747, 'Действуйте! Бот теперь активен - @cicanonimbot')
+    }catch(e) {
+        console.error(e);
+    }
+})
+
 // 933981477
 
 let admquiz;
